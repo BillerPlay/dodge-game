@@ -74,7 +74,7 @@ A functional approach was chosen because the game is relatively small and simple
 
 ## 🌐 Live Game
 
-[Click here to access to the game!]()
+[Click here to access to the game!](https://billerplay.github.io/dodge-game/)
 
 ## 🐞 Known Bugs / Future Improvements
 
