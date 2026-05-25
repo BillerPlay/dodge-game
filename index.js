@@ -3,7 +3,6 @@ const gameField = document.getElementById('gameField');
 const FIELD_WIDTH = 480;
 const FIELD_HEIGHT = 640;
 
-// --- Player ---
 const player = {
   width: 50,
   height: 50,
@@ -25,7 +24,6 @@ function createPlayer() {
   gameField.appendChild(player.el);
 }
 
-// --- Keys ---
 const keys = {
   left: false,
   right: false,
@@ -41,18 +39,15 @@ document.addEventListener('keyup', (e) => {
   if (e.key === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
 });
 
-// --- Update ---
 function update() {
   if (keys.left) player.x -= player.speed;
   if (keys.right) player.x += player.speed;
 
-  // не выходить за края поля
   player.x = Math.max(0, Math.min(FIELD_WIDTH - player.width, player.x));
 
   player.el.style.left = player.x + 'px';
 }
 
-// --- Enemy ---
 const enemy = {
   width: 40,
   height: 40,
@@ -77,7 +72,6 @@ function createEnemy() {
 function updateEnemy() {
   enemy.y += enemy.speed;
 
-  // вышел за низ — появляется сверху снова
   if (enemy.y > FIELD_HEIGHT) {
     enemy.y = -enemy.height;
     enemy.x = Math.random() * (FIELD_WIDTH - enemy.width);
@@ -87,7 +81,6 @@ function updateEnemy() {
   enemy.el.style.left = enemy.x + 'px';
 }
 
-// --- Game Loop ---
 function gameLoop() {
   update();
   updateEnemy();
