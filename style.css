@@ -54,3 +54,32 @@ body {
   letter-spacing: 2px;   
   text-align: right;           
 }
+
+#score-box {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-family: 'Montserrat', sans-serif;
+  z-index: 10;
+  pointer-events: none;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: fit-content;
+}
+
+#score-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+#score-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: #00ff88;
+}

@@ -119,6 +119,8 @@ function updateEnemies() {
     }
 
     if (enemyData.y > FIELD_HEIGHT) {
+      score+=10;
+      renderScore();
       resetEnemy(enemyData);
     }
 
@@ -128,10 +130,23 @@ function updateEnemies() {
 }
 
 let lives = 3;
+let score = 0;
 const livesEl = document.getElementById('lives-hearts');
-
+const scoreEl = document.getElementById('score-value');
 function renderLives() {
   livesEl.textContent = '❤️'.repeat(lives);
+  if (lives <= 0) {
+    alert(`Game is over! Your score: ${score}`);
+    lives = 3;
+    score = 0;
+    renderScore();
+    enemies.forEach(e => resetEnemy(e));
+    renderLives();
+  }
+}
+
+function renderScore() {
+  scoreEl.textContent = score;
 }
 
 function gameLoop() {
@@ -142,4 +157,5 @@ function gameLoop() {
 
 createPlayer();
 renderLives();
+renderScore();
 gameLoop();
