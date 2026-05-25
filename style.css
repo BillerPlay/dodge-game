@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -19,4 +21,36 @@ body {
   border: 2px solid #333;
   position: relative;
   overflow: hidden;
+}
+
+#lives {
+  position: absolute;
+  top: 16px;
+  right: 16px;         
+  font-family: 'Montserrat', sans-serif;
+  z-index: 10;
+  pointer-events: none;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;         
+  width: fit-content;
+}
+
+#lives-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  text-align: right;
+  
+  margin-right: 30px;
+}
+
+#lives-hearts {
+  font-size: 26px;
+  letter-spacing: 2px;   
+  text-align: right;           
 }
