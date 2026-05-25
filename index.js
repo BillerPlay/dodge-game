@@ -8,12 +8,13 @@ const player = {
   height: 50,
   x: FIELD_WIDTH / 2 - 25,
   y: FIELD_HEIGHT - 70,
-  speed: 5,
+  speed: 300, 
   color: '#00ff88',
   el: null,
 };
 
 function createPlayer() {
+  if (player.el) return;
   player.el = document.createElement('div');
   player.el.style.position = 'absolute';
   player.el.style.width = player.width + 'px';
@@ -39,15 +40,15 @@ document.addEventListener('keyup', (e) => {
   if (e.key === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
 });
 
-function update() {
-  if (keys.left) player.x -= player.speed;
-  if (keys.right) player.x += player.speed;
+function update(dt) {
+  if (keys.left) player.x -= player.speed * dt;
+  if (keys.right) player.x += player.speed * dt;
 
   player.x = Math.max(0, Math.min(FIELD_WIDTH - player.width, player.x));
   player.el.style.left = player.x + 'px';
 }
 
-const enemies = [];
+let enemies = [];
 const MAX_ENEMIES = 7; 
 
 function getRandomXPosition(enemySize) {
@@ -67,7 +68,7 @@ function createEnemy() {
     height: size,
     x: getRandomXPosition(size),
     y: -size - Math.random() * 300,
-    speed: Math.random() * 3 + 2,
+    speed: Math.random() * 180 + 120, 
     color: '#ff3333',
     el: document.createElement('div')
   };
@@ -92,7 +93,7 @@ function resetEnemy(enemyData) {
   
   enemyData.x = getRandomXPosition(size); 
   enemyData.y = -size - Math.random() * 400; 
-  enemyData.speed = Math.random() * 4 + 5; 
+  enemyData.speed = Math.random() * 240 + 300; 
 }
 
 function isColliding(enemyData) {
@@ -104,21 +105,23 @@ function isColliding(enemyData) {
   );
 }
 
-function updateEnemies() {
+function updateEnemies(dt) {
   if (enemies.length < MAX_ENEMIES && Math.random() < 0.02) {
     createEnemy();
   }
 
   enemies.forEach((enemyData) => {
-    enemyData.y += enemyData.speed;
+    enemyData.y += enemyData.speed * dt;
 
     if (isColliding(enemyData)) {
       lives--;
       renderLives();
-      resetEnemy(enemyData);
+      if (lives > 0) resetEnemy(enemyData);
     }
 
     if (enemyData.y > FIELD_HEIGHT) {
+      score += 10;
+      renderScore();
       resetEnemy(enemyData);
     }
 
@@ -128,18 +131,91 @@ function updateEnemies() {
 }
 
 let lives = 3;
+let score = 0;
+let isGameActive = false;
+
 const livesEl = document.getElementById('lives-hearts');
+const scoreEl = document.getElementById('score-value');
+
+const startScreen = document.getElementById('start-screen');
+const gameOverScreen = document.getElementById('game-over-screen');
+const finalScoreEl = document.getElementById('final-score');
+
+const startBtn = document.getElementById('start-btn');
+const howToBtn = document.getElementById('how-to-btn');
+const restartBtn = document.getElementById('restart-btn');
+const howToModal = document.getElementById('how-to-modal');
+const closeModalBtn = document.getElementById('close-modal-btn');
 
 function renderLives() {
-  livesEl.textContent = '❤️'.repeat(lives);
+  livesEl.textContent = '❤️'.repeat(Math.max(0, lives));
+  if (lives <= 0) {
+    endGame();
+  }
 }
 
-function gameLoop() {
-  update();
-  updateEnemies();
+function renderScore() {
+  scoreEl.textContent = score;
+}
+
+function startGame() {
+  lives = 3;
+  score = 0;
+  renderScore();
+  renderLives();
+
+  player.x = FIELD_WIDTH / 2 - player.width / 2;
+
+  startScreen.classList.add('hidden');
+  gameOverScreen.classList.add('hidden');
+
+  createPlayer();
+  
+  isGameActive = true;
+}
+
+function endGame() {
+  isGameActive = false;
+
+  finalScoreEl.textContent = score;
+  gameOverScreen.classList.remove('hidden');
+
+  enemies.forEach(enemy => {
+    if (enemy.el) enemy.el.remove();
+  });
+  enemies = [];
+}
+
+startBtn.addEventListener('click', startGame);
+restartBtn.addEventListener('click', startGame);
+
+howToBtn.addEventListener('click', () => {
+  howToModal.classList.remove('hidden');
+});
+
+closeModalBtn.addEventListener('click', () => {
+  howToModal.classList.add('hidden');
+});
+
+let lastTime = 0;
+
+function gameLoop(currentTime) {
+  let dt = (currentTime - lastTime) / 1000;
+  if (dt > 0.1) dt = 0.1; 
+  lastTime = currentTime;
+
+  if (isGameActive) {
+    update(dt);
+    updateEnemies(dt);
+  }
+  
   requestAnimationFrame(gameLoop);
 }
 
-createPlayer();
 renderLives();
-gameLoop();
+renderScore();
+
+requestAnimationFrame((time) => {
+  lastTime = time;
+  gameLoop(time);
+});

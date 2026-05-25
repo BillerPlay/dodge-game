@@ -3,17 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Name</title>
+  <title>Dodge Game</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main id="gameField">
-    <div id="lives">
+    <section id="score-box">
+      <div id="score-label">Score</div>
+      <div id="score-value">0</div>
+    </section>
+
+    <section id="lives">
       <div id="lives-label">Lives</div>
       <div id="lives-hearts"></div>
-    </div>
+    </section>
+
+    <section id="start-screen" class="screen">
+      <h1>DODGE GAME</h1>
+      <div class="btn-group">
+        <button id="start-btn">PLAY GAME</button>
+        <button id="how-to-btn">HOW TO PLAY</button>
+      </div>
+    </section>
+
+    <section id="game-over-screen" class="screen hidden">
+      <h2>GAME OVER</h2>
+      <p>YOUR SCORE</p>
+      <div id="final-score">0</div>
+      <button id="restart-btn">PLAY AGAIN</button>
+    </section>
+
+    <section id="how-to-modal" class="screen hidden">
+      <h2>HOW TO PLAY</h2>
+      <div class="modal-content">
+        <p>⚡ Use <b>Left/Right Arrows</b> or <b>A/D keys</b> to move your green square.</p>
+        <p>❌ Avoid falling <b>red squares</b>.</p>
+        <p>❤️ You have 3 lives. Every dodge gives you +10 points!</p>
+      </div>
+      <button id="close-modal-btn">CLOSE</button>
+    </section>
   </main>
+
   <script src="index.js"></script>
 </body>
 </html>
- 
