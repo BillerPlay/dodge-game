@@ -44,49 +44,103 @@ function update() {
   if (keys.right) player.x += player.speed;
 
   player.x = Math.max(0, Math.min(FIELD_WIDTH - player.width, player.x));
-
   player.el.style.left = player.x + 'px';
 }
 
-const enemy = {
-  width: 40,
-  height: 40,
-  x: Math.random() * (FIELD_WIDTH - 40),
-  y: -40,
-  speed: 3,
-  color: '#ff3333',
-  el: null,
-};
+const enemies = [];
+const MAX_ENEMIES = 7; 
 
-function createEnemy() {
-  enemy.el = document.createElement('div');
-  enemy.el.style.position = 'absolute';
-  enemy.el.style.width = enemy.width + 'px';
-  enemy.el.style.height = enemy.height + 'px';
-  enemy.el.style.backgroundColor = enemy.color;
-  enemy.el.style.left = enemy.x + 'px';
-  enemy.el.style.top = enemy.y + 'px';
-  gameField.appendChild(enemy.el);
+function getRandomXPosition(enemySize) {
+  const zone = Math.floor(Math.random() * 3);
+  const zoneWidth = FIELD_WIDTH / 3;          
+  
+  let x = (zone * zoneWidth) + Math.random() * (zoneWidth - enemySize);
+  
+  // Защита от вылета за правый край
+  return Math.max(0, Math.min(FIELD_WIDTH - enemySize, x));
 }
 
-function updateEnemy() {
-  enemy.y += enemy.speed;
+function createEnemy() {
+  const size = Math.floor(Math.random() * 21) + 30;
+  
+  const enemyData = {
+    width: size,
+    height: size,
+    x: getRandomXPosition(size),
+    y: -size - Math.random() * 300,
+    speed: Math.random() * 3 + 2,
+    color: '#ff3333',
+    el: document.createElement('div')
+  };
 
-  if (enemy.y > FIELD_HEIGHT) {
-    enemy.y = -enemy.height;
-    enemy.x = Math.random() * (FIELD_WIDTH - enemy.width);
+  enemyData.el.style.position = 'absolute';
+  enemyData.el.style.width = enemyData.width + 'px';
+  enemyData.el.style.height = enemyData.height + 'px';
+  enemyData.el.style.backgroundColor = enemyData.color;
+  enemyData.el.style.left = enemyData.x + 'px';
+  enemyData.el.style.top = enemyData.y + 'px';
+  
+  gameField.appendChild(enemyData.el);
+  enemies.push(enemyData);
+}
+
+function resetEnemy(enemyData) {
+  const size = Math.floor(Math.random() * 21) + 30;
+  enemyData.width = size;
+  enemyData.height = size;
+  enemyData.el.style.width = size + 'px';
+  enemyData.el.style.height = size + 'px';
+  
+  enemyData.x = getRandomXPosition(size); 
+  enemyData.y = -size - Math.random() * 400; 
+  enemyData.speed = Math.random() * 4 + 5; 
+}
+
+function isColliding(enemyData) {
+  return (
+    enemyData.x < player.x + player.width &&
+    enemyData.x + enemyData.width > player.x &&
+    enemyData.y < player.y + player.height &&
+    enemyData.y + enemyData.height > player.y
+  );
+}
+
+function updateEnemies() {
+  if (enemies.length < MAX_ENEMIES && Math.random() < 0.02) {
+    createEnemy();
   }
 
-  enemy.el.style.top = enemy.y + 'px';
-  enemy.el.style.left = enemy.x + 'px';
+  enemies.forEach((enemyData) => {
+    enemyData.y += enemyData.speed;
+
+    if (isColliding(enemyData)) {
+      lives--;
+      renderLives();
+      resetEnemy(enemyData);
+    }
+
+    if (enemyData.y > FIELD_HEIGHT) {
+      resetEnemy(enemyData);
+    }
+
+    enemyData.el.style.top = enemyData.y + 'px';
+    enemyData.el.style.left = enemyData.x + 'px';
+  });
+}
+
+let lives = 3;
+const livesEl = document.getElementById('lives-hearts');
+
+function renderLives() {
+  livesEl.textContent = '❤️'.repeat(lives);
 }
 
 function gameLoop() {
   update();
-  updateEnemy();
+  updateEnemies();
   requestAnimationFrame(gameLoop);
 }
 
 createPlayer();
-createEnemy();
+renderLives();
 gameLoop();

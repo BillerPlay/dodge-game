@@ -16,3 +16,11 @@ Because these AI tools have free plan and they are the best AI tools nowadays.
 - **What was wrong:** When we change language in keyboard, keys "a" and "d" will not work
 - **How I fixed it:** We changed 'a' and 'd' in code to 'KeyA' and 'KeyD'
 - **Time lost:** ~2 minutes
+
+### [25.05.2026] - [The AI ​​didn't display hearts]
+ 
+- **What I asked the AI:** Add hearts in ui
+- **What it gave me:** updated CSS and html
+- **What was wrong:** AI forgot render hearts in index.js
+- **How I fixed it:** Wrote render of hearts in js
+- **Time lost:** ~5 minutes
