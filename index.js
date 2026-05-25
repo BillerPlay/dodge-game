@@ -56,7 +56,6 @@ function getRandomXPosition(enemySize) {
   
   let x = (zone * zoneWidth) + Math.random() * (zoneWidth - enemySize);
   
-  // Защита от вылета за правый край
   return Math.max(0, Math.min(FIELD_WIDTH - enemySize, x));
 }
 
