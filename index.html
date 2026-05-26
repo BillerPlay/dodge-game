@@ -9,8 +9,15 @@
 <body>
   <main id="gameField">
     <section id="score-box">
-      <div id="score-label">Score</div>
-      <div id="score-value">0</div>
+      <div class="score-sub-box">
+        <div id="score-label">Score</div>
+        <div id="score-value">0</div>
+      </div>
+      
+      <div id="highscore-box" class="score-sub-box hidden">
+        <div id="highscore-label">High Score</div>
+        <div id="highscore-value">0</div>
+      </div>
     </section>
 
     <section id="lives">
@@ -20,6 +27,7 @@
 
     <section id="start-screen" class="screen">
       <h1>DODGE GAME</h1>
+      <div id="menu-highscore">HIGH SCORE: <span id="menu-highscore-value">0</span></div>
       <div class="btn-group">
         <button id="start-btn">PLAY GAME</button>
         <button id="how-to-btn">HOW TO PLAY</button>
@@ -30,6 +38,11 @@
       <h2>GAME OVER</h2>
       <p>YOUR SCORE</p>
       <div id="final-score">0</div>
+      
+      <div id="game-over-highscore" class="gradient-rainbow">
+        HIGH SCORE: <span id="game-over-highscore-value">0</span>
+      </div>
+      
       <button id="restart-btn">PLAY AGAIN</button>
     </section>
 
