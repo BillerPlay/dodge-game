@@ -26,34 +26,40 @@
     </section>
 
     <section id="start-screen" class="screen">
-      <h1>DODGE GAME</h1>
-      <div id="menu-highscore">HIGH SCORE: <span id="menu-highscore-value">0</span></div>
-      <div class="btn-group">
-        <button id="start-btn">PLAY GAME</button>
-        <button id="how-to-btn">HOW TO PLAY</button>
+      <div class="screen-content">
+        <h1>Dodge Game</h1>
+        <div id="menu-highscore">BEST RUN: <span id="menu-highscore-value">0</span></div>
+        <div class="btn-group">
+          <button id="start-btn">PLAY GAME</button>
+          <button id="how-to-btn">HOW TO PLAY</button>
+        </div>
       </div>
     </section>
 
     <section id="game-over-screen" class="screen hidden">
-      <h2>GAME OVER</h2>
-      <p>YOUR SCORE</p>
-      <div id="final-score">0</div>
-      
-      <div id="game-over-highscore" class="gradient-rainbow">
-        HIGH SCORE: <span id="game-over-highscore-value">0</span>
+      <div class="screen-content">
+        <h2>GAME OVER</h2>
+        <p class="sub-title">YOUR FINAL SCORE</p>
+        <div id="final-score">0</div>
+        
+        <div id="game-over-highscore" class="gradient-rainbow">
+          HIGH SCORE: <span id="game-over-highscore-value">0</span>
+        </div>
+        
+        <button id="restart-btn">PLAY AGAIN</button>
       </div>
-      
-      <button id="restart-btn">PLAY AGAIN</button>
     </section>
 
     <section id="how-to-modal" class="screen hidden">
-      <h2>HOW TO PLAY</h2>
-      <div class="modal-content">
-        <p>⚡ Use <b>Left/Right Arrows</b> or <b>A/D keys</b> to move your green square.</p>
-        <p>❌ Avoid falling <b>red squares</b>.</p>
-        <p>❤️ You have 3 lives. Every dodge gives you +10 points!</p>
+      <div class="screen-content modal-window">
+        <h2>HOW TO PLAY</h2>
+        <div class="modal-content">
+          <p>⚡ Use <b>Left/Right Arrows</b> or <b>A/D keys</b> to move your neon platform.</p>
+          <p>❌ Avoid falling <b>red glitches</b>.</p>
+          <p>❤️ You have 3 lives. Every dodge gives you +10 points!</p>
+        </div>
+        <button id="close-modal-btn">CLOSE</button>
       </div>
-      <button id="close-modal-btn">CLOSE</button>
     </section>
   </main>
 

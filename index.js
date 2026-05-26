@@ -8,7 +8,7 @@ const player = {
   height: 50,
   x: FIELD_WIDTH / 2 - 25,
   y: FIELD_HEIGHT - 70,
-  speed: 300, 
+  speed: 360,
   color: '#00ff88',
   el: null,
 };
@@ -22,6 +22,10 @@ function createPlayer() {
   player.el.style.backgroundColor = player.color;
   player.el.style.left = player.x + 'px';
   player.el.style.top = player.y + 'px';
+  
+  player.el.style.borderRadius = '10px';
+  player.el.style.boxShadow = '0 0 20px #00ff88, inset 0 0 10px rgba(255,255,255,0.5)';
+  
   gameField.appendChild(player.el);
 }
 
@@ -68,8 +72,8 @@ function createEnemy() {
     height: size,
     x: getRandomXPosition(size),
     y: -size - Math.random() * 300,
-    speed: Math.random() * 180 + 120, 
-    color: '#ff3333',
+    speed: Math.random() * 180 + 140, 
+    color: '#ff335c',
     el: document.createElement('div')
   };
 
@@ -79,6 +83,9 @@ function createEnemy() {
   enemyData.el.style.backgroundColor = enemyData.color;
   enemyData.el.style.left = enemyData.x + 'px';
   enemyData.el.style.top = enemyData.y + 'px';
+  
+  enemyData.el.style.borderRadius = '8px';
+  enemyData.el.style.boxShadow = '0 0 15px #ff335c';
   
   gameField.appendChild(enemyData.el);
   enemies.push(enemyData);
@@ -258,7 +265,6 @@ function gameLoop(currentTime) {
 }
 
 loadHighScore();
-
 renderLives();
 renderScore();
 
