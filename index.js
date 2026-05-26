@@ -49,7 +49,7 @@ function update(dt) {
 }
 
 let enemies = [];
-const MAX_ENEMIES = 7; 
+const MAX_ENEMIES = 6; 
 
 function getRandomXPosition(enemySize) {
   const zone = Math.floor(Math.random() * 3);
@@ -122,6 +122,7 @@ function updateEnemies(dt) {
     if (enemyData.y > FIELD_HEIGHT) {
       score += 10;
       renderScore();
+      updateHighScore();
       resetEnemy(enemyData);
     }
 
@@ -133,19 +134,61 @@ function updateEnemies(dt) {
 let lives = 3;
 let score = 0;
 let isGameActive = false;
+let highScore = 0;
 
 const livesEl = document.getElementById('lives-hearts');
 const scoreEl = document.getElementById('score-value');
-
+const gameHighScoreBox = document.getElementById('highscore-box');
+const gameHighScoreValue = document.getElementById('highscore-value');
 const startScreen = document.getElementById('start-screen');
 const gameOverScreen = document.getElementById('game-over-screen');
 const finalScoreEl = document.getElementById('final-score');
+
+const menuHighScoreValue = document.getElementById('menu-highscore-value');
+const gameOverHighScoreValue = document.getElementById('game-over-highscore-value');
 
 const startBtn = document.getElementById('start-btn');
 const howToBtn = document.getElementById('how-to-btn');
 const restartBtn = document.getElementById('restart-btn');
 const howToModal = document.getElementById('how-to-modal');
 const closeModalBtn = document.getElementById('close-modal-btn');
+
+function loadHighScore() {
+  const savedScore = localStorage.getItem('dodgeGame_highScore');
+  if (savedScore !== null) {
+    highScore = parseInt(savedScore, 10);
+  } else {
+    highScore = 0;
+  }
+  
+  menuHighScoreValue.textContent = highScore;
+  gameOverHighScoreValue.textContent = highScore;
+  gameHighScoreValue.textContent = highScore;
+
+  if (highScore > 0) {
+    gameHighScoreBox.classList.remove('hidden');
+  } else {
+    gameHighScoreBox.classList.add('hidden');
+  }
+}
+
+function updateHighScore() {
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem('dodgeGame_highScore', highScore);
+    
+    gameOverHighScoreValue.textContent = highScore;
+    menuHighScoreValue.textContent = highScore;
+    gameHighScoreValue.textContent = highScore;
+    
+    if (highScore > 0) {
+      gameHighScoreBox.classList.remove('hidden');
+      if (!scoreEl.classList.contains('pulse-glow-score')) {
+        scoreEl.classList.add('pulse-glow-score');
+      }
+    }
+  }
+}
 
 function renderLives() {
   livesEl.textContent = '❤️'.repeat(Math.max(0, lives));
@@ -172,12 +215,14 @@ function startGame() {
   createPlayer();
   
   isGameActive = true;
+
+  scoreEl.classList.remove('pulse-glow-score');
 }
 
 function endGame() {
   isGameActive = false;
-
-  finalScoreEl.textContent = score;
+  updateHighScore(); 
+  finalScoreEl.textContent = Math.max(score, highScore); 
   gameOverScreen.classList.remove('hidden');
 
   enemies.forEach(enemy => {
@@ -211,6 +256,8 @@ function gameLoop(currentTime) {
   
   requestAnimationFrame(gameLoop);
 }
+
+loadHighScore();
 
 renderLives();
 renderScore();
