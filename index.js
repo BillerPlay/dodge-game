@@ -22,17 +22,12 @@ function createPlayer() {
   player.el.style.backgroundColor = player.color;
   player.el.style.left = player.x + 'px';
   player.el.style.top = player.y + 'px';
-  
   player.el.style.borderRadius = '10px';
   player.el.style.boxShadow = '0 0 20px #00ff88, inset 0 0 10px rgba(255,255,255,0.5)';
-  
   gameField.appendChild(player.el);
 }
 
-const keys = {
-  left: false,
-  right: false,
-};
+const keys = { left: false, right: false };
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
@@ -47,32 +42,28 @@ document.addEventListener('keyup', (e) => {
 function update(dt) {
   if (keys.left) player.x -= player.speed * dt;
   if (keys.right) player.x += player.speed * dt;
-
   player.x = Math.max(0, Math.min(FIELD_WIDTH - player.width, player.x));
   player.el.style.left = player.x + 'px';
 }
 
 let enemies = [];
-const MAX_ENEMIES = 6; 
+const MAX_ENEMIES = 6;
 
 function getRandomXPosition(enemySize) {
   const zone = Math.floor(Math.random() * 3);
-  const zoneWidth = FIELD_WIDTH / 3;          
-  
-  let x = (zone * zoneWidth) + Math.random() * (zoneWidth - enemySize);
-  
+  const zoneWidth = FIELD_WIDTH / 3;
+  const x = (zone * zoneWidth) + Math.random() * (zoneWidth - enemySize);
   return Math.max(0, Math.min(FIELD_WIDTH - enemySize, x));
 }
 
 function createEnemy() {
   const size = Math.floor(Math.random() * 21) + 30;
-  
   const enemyData = {
     width: size,
     height: size,
     x: getRandomXPosition(size),
     y: -size - Math.random() * 300,
-    speed: Math.random() * 180 + 140, 
+    speed: Math.random() * 180 + 140,
     color: '#ff335c',
     el: document.createElement('div')
   };
@@ -83,10 +74,9 @@ function createEnemy() {
   enemyData.el.style.backgroundColor = enemyData.color;
   enemyData.el.style.left = enemyData.x + 'px';
   enemyData.el.style.top = enemyData.y + 'px';
-  
   enemyData.el.style.borderRadius = '8px';
   enemyData.el.style.boxShadow = '0 0 15px #ff335c';
-  
+
   gameField.appendChild(enemyData.el);
   enemies.push(enemyData);
 }
@@ -97,10 +87,9 @@ function resetEnemy(enemyData) {
   enemyData.height = size;
   enemyData.el.style.width = size + 'px';
   enemyData.el.style.height = size + 'px';
-  
-  enemyData.x = getRandomXPosition(size); 
-  enemyData.y = -size - Math.random() * 400; 
-  enemyData.speed = Math.random() * 240 + 300; 
+  enemyData.x = getRandomXPosition(size);
+  enemyData.y = -size - Math.random() * 400;
+  enemyData.speed = Math.random() * 240 + 300;
 }
 
 function isColliding(enemyData) {
@@ -143,6 +132,69 @@ let score = 0;
 let isGameActive = false;
 let highScore = 0;
 
+const bgMusic = document.getElementById('bg-music');
+let musicVolume = 50;
+let effectsVolume = 50;
+
+const musicVolumeSlider = document.getElementById('music-volume');
+const effectsVolumeSlider = document.getElementById('effects-volume');
+const musicVolumeValueEl = document.getElementById('music-volume-value');
+const effectsVolumeValueEl = document.getElementById('effects-volume-value');
+
+function updateSliderTrack(slider) {
+  const val = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+  if (slider.disabled) {
+    slider.style.setProperty('--track-fill', `${val}%`);
+    return;
+  }
+  slider.style.setProperty('--track-fill', `${val}%`);
+}
+
+function loadAudioSettings() {
+  const savedMusic = localStorage.getItem('dodgeGame_musicVolume');
+  const savedEffects = localStorage.getItem('dodgeGame_effectsVolume');
+
+  musicVolume = savedMusic !== null ? parseInt(savedMusic, 10) : 50;
+  effectsVolume = savedEffects !== null ? parseInt(savedEffects, 10) : 50;
+
+  musicVolumeSlider.value = musicVolume;
+  effectsVolumeSlider.value = effectsVolume;
+  musicVolumeValueEl.textContent = musicVolume;
+  effectsVolumeValueEl.textContent = effectsVolume;
+
+  bgMusic.volume = musicVolume / 100;
+
+  updateSliderTrack(musicVolumeSlider);
+  updateSliderTrack(effectsVolumeSlider);
+}
+
+musicVolumeSlider.addEventListener('input', () => {
+  musicVolume = parseInt(musicVolumeSlider.value, 10);
+  musicVolumeValueEl.textContent = musicVolume;
+  bgMusic.volume = musicVolume / 100;
+  localStorage.setItem('dodgeGame_musicVolume', musicVolume);
+  updateSliderTrack(musicVolumeSlider);
+});
+
+effectsVolumeSlider.addEventListener('input', () => {
+  effectsVolume = parseInt(effectsVolumeSlider.value, 10);
+  effectsVolumeValueEl.textContent = effectsVolume;
+  localStorage.setItem('dodgeGame_effectsVolume', effectsVolume);
+  updateSliderTrack(effectsVolumeSlider);
+});
+
+function playMusic() {
+  bgMusic.currentTime = 0;
+  bgMusic.volume = musicVolume / 100;
+  bgMusic.play().catch(() => {
+  });
+}
+
+function stopMusic() {
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+}
+
 const livesEl = document.getElementById('lives-hearts');
 const scoreEl = document.getElementById('score-value');
 const gameHighScoreBox = document.getElementById('highscore-box');
@@ -162,12 +214,8 @@ const closeModalBtn = document.getElementById('close-modal-btn');
 
 function loadHighScore() {
   const savedScore = localStorage.getItem('dodgeGame_highScore');
-  if (savedScore !== null) {
-    highScore = parseInt(savedScore, 10);
-  } else {
-    highScore = 0;
-  }
-  
+  highScore = savedScore !== null ? parseInt(savedScore, 10) : 0;
+
   menuHighScoreValue.textContent = highScore;
   gameOverHighScoreValue.textContent = highScore;
   gameHighScoreValue.textContent = highScore;
@@ -183,11 +231,11 @@ function updateHighScore() {
   if (score > highScore) {
     highScore = score;
     localStorage.setItem('dodgeGame_highScore', highScore);
-    
+
     gameOverHighScoreValue.textContent = highScore;
     menuHighScoreValue.textContent = highScore;
     gameHighScoreValue.textContent = highScore;
-    
+
     if (highScore > 0) {
       gameHighScoreBox.classList.remove('hidden');
       if (!scoreEl.classList.contains('pulse-glow-score')) {
@@ -220,51 +268,48 @@ function startGame() {
   gameOverScreen.classList.add('hidden');
 
   createPlayer();
-  
-  isGameActive = true;
 
+  isGameActive = true;
   scoreEl.classList.remove('pulse-glow-score');
+
+  playMusic();
 }
 
 function endGame() {
   isGameActive = false;
-  updateHighScore(); 
-  finalScoreEl.textContent = Math.max(score, highScore); 
+  updateHighScore();
+  finalScoreEl.textContent = Math.max(score, highScore);
   gameOverScreen.classList.remove('hidden');
 
-  enemies.forEach(enemy => {
-    if (enemy.el) enemy.el.remove();
-  });
+  enemies.forEach(enemy => { if (enemy.el) enemy.el.remove(); });
   enemies = [];
+
+  stopMusic();
 }
 
 startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', startGame);
 
-howToBtn.addEventListener('click', () => {
-  howToModal.classList.remove('hidden');
-});
-
-closeModalBtn.addEventListener('click', () => {
-  howToModal.classList.add('hidden');
-});
+howToBtn.addEventListener('click', () => { howToModal.classList.remove('hidden'); });
+closeModalBtn.addEventListener('click', () => { howToModal.classList.add('hidden'); });
 
 let lastTime = 0;
 
 function gameLoop(currentTime) {
   let dt = (currentTime - lastTime) / 1000;
-  if (dt > 0.1) dt = 0.1; 
+  if (dt > 0.1) dt = 0.1;
   lastTime = currentTime;
 
   if (isGameActive) {
     update(dt);
     updateEnemies(dt);
   }
-  
+
   requestAnimationFrame(gameLoop);
 }
 
 loadHighScore();
+loadAudioSettings();
 renderLives();
 renderScore();
 
