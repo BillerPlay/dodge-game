@@ -8,7 +8,10 @@
 </head>
 <body>
   <main id="gameField">
-    <audio id="bg-music" loop src="sounds/main music.mp3"></audio>
+    <audio id="bg-music"      loop src="sounds/main music.mp3"></audio>
+    <audio id="sfx-click"          src="sounds/button click.mp3"></audio>
+    <audio id="sfx-on-button"          src="sounds/on button2.mp3"></audio>
+    <audio id="sfx-collision"      src="sounds/colision sound.mp3"></audio>
 
     <section id="score-box">
       <div class="score-sub-box">
@@ -49,14 +52,13 @@
             </div>
           </div>
 
-          <div class="setting-row setting-row--disabled">
+          <div class="setting-row">
             <span class="setting-label">EFFECTS</span>
             <div class="slider-wrapper">
               <span class="slider-icon">⚡</span>
-              <input type="range" id="effects-volume" class="volume-slider" min="0" max="100" value="50" disabled>
+              <input type="range" id="effects-volume" class="volume-slider" min="0" max="100" value="50">
               <span class="volume-value" id="effects-volume-value">50</span>
             </div>
-            <span class="coming-soon-tag">SOON</span>
           </div>
         </div>
 
@@ -85,14 +87,13 @@
             </div>
           </div>
 
-          <div class="setting-row setting-row--disabled">
+          <div class="setting-row">
             <span class="setting-label">EFFECTS</span>
             <div class="slider-wrapper">
               <span class="slider-icon">⚡</span>
-              <input type="range" id="effects-volume" class="volume-slider" min="0" max="100" value="50" disabled>
+              <input type="range" id="effects-volume" class="volume-slider" min="0" max="100" value="50">
               <span class="volume-value" id="effects-volume-value">50</span>
             </div>
-            <span class="coming-soon-tag">SOON</span>
           </div>
         </div>
       </div>

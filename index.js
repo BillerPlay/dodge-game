@@ -114,6 +114,7 @@ function updateEnemies(dt) {
 
     if (isColliding(enemyData)) {
       lives--;
+      playCollision();
       renderLives();
       if (lives > 0) resetEnemy(enemyData);
     }
@@ -136,13 +137,16 @@ let isGameActive = false;
 let isPaused = false;
 let highScore = 0;
 
-const bgMusic = document.getElementById('bg-music');
-let musicVolume = 50;
+const bgMusic      = document.getElementById('bg-music');
+const sfxClick     = document.getElementById('sfx-click');
+const sfxOnButton     = document.getElementById('sfx-on-button');
+const sfxCollision = document.getElementById('sfx-collision');
+let musicVolume   = 50;
 let effectsVolume = 50;
 
-const musicVolumeSliders   = document.querySelectorAll('#music-volume');
-const effectsVolumeSliders = document.querySelectorAll('#effects-volume');
-const musicVolumeValueEls  = document.querySelectorAll('#music-volume-value');
+const musicVolumeSliders    = document.querySelectorAll('#music-volume');
+const effectsVolumeSliders  = document.querySelectorAll('#effects-volume');
+const musicVolumeValueEls   = document.querySelectorAll('#music-volume-value');
 const effectsVolumeValueEls = document.querySelectorAll('#effects-volume-value');
 
 function updateSliderTrack(slider) {
@@ -168,7 +172,7 @@ function applyEffectsVolume(val) {
 function loadAudioSettings() {
   const savedMusic   = localStorage.getItem('dodgeGame_musicVolume');
   const savedEffects = localStorage.getItem('dodgeGame_effectsVolume');
-  applyMusicVolume(savedMusic   !== null ? parseInt(savedMusic,   10) : 50);
+  applyMusicVolume(savedMusic     !== null ? parseInt(savedMusic,   10) : 50);
   applyEffectsVolume(savedEffects !== null ? parseInt(savedEffects, 10) : 50);
 }
 
@@ -179,6 +183,25 @@ musicVolumeSliders.forEach(slider => {
 effectsVolumeSliders.forEach(slider => {
   slider.addEventListener('input', () => applyEffectsVolume(parseInt(slider.value, 10)));
 });
+
+
+function playClick() {
+  const s = sfxClick.cloneNode();
+  s.volume = effectsVolume / 100;
+  s.play().catch(() => {});
+}
+
+function playOnButton() {
+  const s = sfxOnButton.cloneNode();
+  s.volume = effectsVolume / 100;
+  s.play().catch(() => {});
+}
+
+function playCollision() {
+  const s = sfxCollision.cloneNode();
+  s.volume = effectsVolume / 100;
+  s.play().catch(() => {});
+}
 
 function playMusic() {
   bgMusic.currentTime = 0;
@@ -328,14 +351,21 @@ function goToMainMenu() {
   stopMusic();
 }
 
-startBtn.addEventListener('click', startGame);
-restartBtn.addEventListener('click', startGame);
-resumeBtn.addEventListener('click', togglePause);
-pauseMenuBtn.addEventListener('click', goToMainMenu);
-gameoverMenuBtn.addEventListener('click', goToMainMenu);
+startBtn.addEventListener('click', () => { playClick(); startGame(); });
+startBtn.addEventListener('mouseenter', playOnButton);
+restartBtn.addEventListener('click', () => { playClick(); startGame(); });
+restartBtn.addEventListener('mouseenter', playOnButton);
+resumeBtn.addEventListener('click', () => { playClick(); togglePause(); });
+resumeBtn.addEventListener('mouseenter', playOnButton);
+pauseMenuBtn.addEventListener('click', () => { playClick(); goToMainMenu(); });
+pauseMenuBtn.addEventListener('mouseenter', playOnButton);
+gameoverMenuBtn.addEventListener('click', () => { playClick(); goToMainMenu(); });
+gameoverMenuBtn.addEventListener('mouseenter', playOnButton);
 
-howToBtn.addEventListener('click', () => { howToModal.classList.remove('hidden'); });
-closeModalBtn.addEventListener('click', () => { howToModal.classList.add('hidden'); });
+howToBtn.addEventListener('click', () => { playClick(); howToModal.classList.remove('hidden'); });
+howToBtn.addEventListener('mouseenter', playOnButton);
+closeModalBtn.addEventListener('click', () => { playClick(); howToModal.classList.add('hidden'); });
+closeModalBtn.addEventListener('mouseenter', playOnButton);
 
 let lastTime = 0;
 

@@ -531,7 +531,7 @@ button:hover {
   transition: color 0.2s;
 }
 
-.setting-row:not(.setting-row--disabled) .volume-value {
+.setting-row .volume-value {
   color: #00ff88;
 }
 
