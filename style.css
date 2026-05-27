@@ -297,6 +297,84 @@ button:hover {
   box-shadow: 0 0 15px rgba(110, 103, 133, 0.3);
 }
 
+#pause-screen {
+  background-color: rgba(6, 4, 14, 0.80);
+  backdrop-filter: blur(16px);
+}
+
+.pause-icon {
+  font-size: 40px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 0 12px rgba(0, 204, 255, 0.6));
+  animation: pause-float 2s ease-in-out infinite;
+}
+
+@keyframes pause-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.pause-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  color: #00ccff !important;
+  letter-spacing: 4px;
+  margin-bottom: 8px !important;
+  text-shadow: 0 0 20px rgba(0, 204, 255, 0.5), 0 0 40px rgba(0, 204, 255, 0.2) !important;
+}
+
+.pause-hint {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a4468;
+  letter-spacing: 1px;
+  margin-bottom: 32px;
+}
+
+.pause-hint b {
+  color: #6e6785;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+}
+
+#resume-btn {
+  border-color: #00ccff;
+  color: #00ccff;
+  background-color: rgba(0, 204, 255, 0.02);
+}
+
+#resume-btn:hover {
+  background-color: #00ccff;
+  color: #0b0712;
+  box-shadow: 0 0 25px rgba(0, 204, 255, 0.4);
+}
+
+#pause-menu-btn {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #6e6785;
+}
+
+#pause-menu-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: none;
+}
+
+#gameover-menu-btn {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #6e6785;
+}
+
+#gameover-menu-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: none;
+  transform: translateY(-2px);
+}
 
 .settings-section {
   margin-top: 28px;

@@ -32,6 +32,9 @@ const keys = { left: false, right: false };
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
   if (e.key === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+  if (e.key === 'Escape' && !e.repeat) {
+    if (isGameActive) togglePause();
+  }
 });
 
 document.addEventListener('keyup', (e) => {
@@ -130,64 +133,57 @@ function updateEnemies(dt) {
 let lives = 3;
 let score = 0;
 let isGameActive = false;
+let isPaused = false;
 let highScore = 0;
 
 const bgMusic = document.getElementById('bg-music');
 let musicVolume = 50;
 let effectsVolume = 50;
 
-const musicVolumeSlider = document.getElementById('music-volume');
-const effectsVolumeSlider = document.getElementById('effects-volume');
-const musicVolumeValueEl = document.getElementById('music-volume-value');
-const effectsVolumeValueEl = document.getElementById('effects-volume-value');
+const musicVolumeSliders   = document.querySelectorAll('#music-volume');
+const effectsVolumeSliders = document.querySelectorAll('#effects-volume');
+const musicVolumeValueEls  = document.querySelectorAll('#music-volume-value');
+const effectsVolumeValueEls = document.querySelectorAll('#effects-volume-value');
 
 function updateSliderTrack(slider) {
   const val = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
-  if (slider.disabled) {
-    slider.style.setProperty('--track-fill', `${val}%`);
-    return;
-  }
   slider.style.setProperty('--track-fill', `${val}%`);
 }
 
-function loadAudioSettings() {
-  const savedMusic = localStorage.getItem('dodgeGame_musicVolume');
-  const savedEffects = localStorage.getItem('dodgeGame_effectsVolume');
-
-  musicVolume = savedMusic !== null ? parseInt(savedMusic, 10) : 50;
-  effectsVolume = savedEffects !== null ? parseInt(savedEffects, 10) : 50;
-
-  musicVolumeSlider.value = musicVolume;
-  effectsVolumeSlider.value = effectsVolume;
-  musicVolumeValueEl.textContent = musicVolume;
-  effectsVolumeValueEl.textContent = effectsVolume;
-
-  bgMusic.volume = musicVolume / 100;
-
-  updateSliderTrack(musicVolumeSlider);
-  updateSliderTrack(effectsVolumeSlider);
-}
-
-musicVolumeSlider.addEventListener('input', () => {
-  musicVolume = parseInt(musicVolumeSlider.value, 10);
-  musicVolumeValueEl.textContent = musicVolume;
+function applyMusicVolume(val) {
+  musicVolume = val;
   bgMusic.volume = musicVolume / 100;
   localStorage.setItem('dodgeGame_musicVolume', musicVolume);
-  updateSliderTrack(musicVolumeSlider);
+  musicVolumeSliders.forEach(s => { s.value = val; updateSliderTrack(s); });
+  musicVolumeValueEls.forEach(el => { el.textContent = val; });
+}
+
+function applyEffectsVolume(val) {
+  effectsVolume = val;
+  localStorage.setItem('dodgeGame_effectsVolume', effectsVolume);
+  effectsVolumeSliders.forEach(s => { s.value = val; updateSliderTrack(s); });
+  effectsVolumeValueEls.forEach(el => { el.textContent = val; });
+}
+
+function loadAudioSettings() {
+  const savedMusic   = localStorage.getItem('dodgeGame_musicVolume');
+  const savedEffects = localStorage.getItem('dodgeGame_effectsVolume');
+  applyMusicVolume(savedMusic   !== null ? parseInt(savedMusic,   10) : 50);
+  applyEffectsVolume(savedEffects !== null ? parseInt(savedEffects, 10) : 50);
+}
+
+musicVolumeSliders.forEach(slider => {
+  slider.addEventListener('input', () => applyMusicVolume(parseInt(slider.value, 10)));
 });
 
-effectsVolumeSlider.addEventListener('input', () => {
-  effectsVolume = parseInt(effectsVolumeSlider.value, 10);
-  effectsVolumeValueEl.textContent = effectsVolume;
-  localStorage.setItem('dodgeGame_effectsVolume', effectsVolume);
-  updateSliderTrack(effectsVolumeSlider);
+effectsVolumeSliders.forEach(slider => {
+  slider.addEventListener('input', () => applyEffectsVolume(parseInt(slider.value, 10)));
 });
 
 function playMusic() {
   bgMusic.currentTime = 0;
   bgMusic.volume = musicVolume / 100;
-  bgMusic.play().catch(() => {
-  });
+  bgMusic.play().catch(() => {});
 }
 
 function stopMusic() {
@@ -200,6 +196,7 @@ const scoreEl = document.getElementById('score-value');
 const gameHighScoreBox = document.getElementById('highscore-box');
 const gameHighScoreValue = document.getElementById('highscore-value');
 const startScreen = document.getElementById('start-screen');
+const pauseScreen = document.getElementById('pause-screen');
 const gameOverScreen = document.getElementById('game-over-screen');
 const finalScoreEl = document.getElementById('final-score');
 
@@ -209,6 +206,9 @@ const gameOverHighScoreValue = document.getElementById('game-over-highscore-valu
 const startBtn = document.getElementById('start-btn');
 const howToBtn = document.getElementById('how-to-btn');
 const restartBtn = document.getElementById('restart-btn');
+const resumeBtn = document.getElementById('resume-btn');
+const pauseMenuBtn = document.getElementById('pause-menu-btn');
+const gameoverMenuBtn = document.getElementById('gameover-menu-btn');
 const howToModal = document.getElementById('how-to-modal');
 const closeModalBtn = document.getElementById('close-modal-btn');
 
@@ -259,6 +259,7 @@ function renderScore() {
 function startGame() {
   lives = 3;
   score = 0;
+  isPaused = false;
   renderScore();
   renderLives();
 
@@ -266,6 +267,7 @@ function startGame() {
 
   startScreen.classList.add('hidden');
   gameOverScreen.classList.add('hidden');
+  pauseScreen.classList.add('hidden');
 
   createPlayer();
 
@@ -277,8 +279,10 @@ function startGame() {
 
 function endGame() {
   isGameActive = false;
+  isPaused = false;
   updateHighScore();
-  finalScoreEl.textContent = Math.max(score, highScore);
+  finalScoreEl.textContent = score;
+  pauseScreen.classList.add('hidden');
   gameOverScreen.classList.remove('hidden');
 
   enemies.forEach(enemy => { if (enemy.el) enemy.el.remove(); });
@@ -287,8 +291,48 @@ function endGame() {
   stopMusic();
 }
 
+function togglePause() {
+  isPaused = !isPaused;
+
+  if (isPaused) {
+    pauseScreen.classList.remove('hidden');
+    bgMusic.pause();
+  } else {
+    pauseScreen.classList.add('hidden');
+    bgMusic.play().catch(() => {});
+  }
+}
+
+function goToMainMenu() {
+  isGameActive = false;
+  isPaused = false;
+
+  enemies.forEach(enemy => { if (enemy.el) enemy.el.remove(); });
+  enemies = [];
+
+  if (player.el) {
+    player.el.remove();
+    player.el = null;
+  }
+
+  pauseScreen.classList.add('hidden');
+  gameOverScreen.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+
+  score = 0;
+  lives = 3;
+  renderScore();
+  renderLives();
+  scoreEl.classList.remove('pulse-glow-score');
+
+  stopMusic();
+}
+
 startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', startGame);
+resumeBtn.addEventListener('click', togglePause);
+pauseMenuBtn.addEventListener('click', goToMainMenu);
+gameoverMenuBtn.addEventListener('click', goToMainMenu);
 
 howToBtn.addEventListener('click', () => { howToModal.classList.remove('hidden'); });
 closeModalBtn.addEventListener('click', () => { howToModal.classList.add('hidden'); });
@@ -300,7 +344,7 @@ function gameLoop(currentTime) {
   if (dt > 0.1) dt = 0.1;
   lastTime = currentTime;
 
-  if (isGameActive) {
+  if (isGameActive && !isPaused) {
     update(dt);
     updateEnemies(dt);
   }

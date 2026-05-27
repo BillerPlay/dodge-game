@@ -59,8 +59,42 @@
             <span class="coming-soon-tag">SOON</span>
           </div>
         </div>
-        <!-- ─────────────────────── -->
 
+      </div>
+    </section>
+
+    <section id="pause-screen" class="screen hidden">
+      <div class="screen-content">
+        <div class="pause-icon">⏸</div>
+        <h2 class="pause-title">PAUSED</h2>
+        <p class="pause-hint">Press <b>ESC</b> to resume</p>
+        <div class="btn-group">
+          <button id="resume-btn">RESUME</button>
+          <button id="pause-menu-btn">MAIN MENU</button>
+        </div>
+        
+        <div class="settings-section">
+          <div class="settings-title">AUDIO SETTINGS</div>
+
+          <div class="setting-row">
+            <span class="setting-label">MUSIC</span>
+            <div class="slider-wrapper">
+              <span class="slider-icon">🎵</span>
+              <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50">
+              <span class="volume-value" id="music-volume-value">50</span>
+            </div>
+          </div>
+
+          <div class="setting-row setting-row--disabled">
+            <span class="setting-label">EFFECTS</span>
+            <div class="slider-wrapper">
+              <span class="slider-icon">⚡</span>
+              <input type="range" id="effects-volume" class="volume-slider" min="0" max="100" value="50" disabled>
+              <span class="volume-value" id="effects-volume-value">50</span>
+            </div>
+            <span class="coming-soon-tag">SOON</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -73,8 +107,11 @@
         <div id="game-over-highscore" class="gradient-rainbow">
           HIGH SCORE: <span id="game-over-highscore-value">0</span>
         </div>
-        
-        <button id="restart-btn">PLAY AGAIN</button>
+
+        <div class="btn-group">
+          <button id="restart-btn">PLAY AGAIN</button>
+          <button id="gameover-menu-btn">MAIN MENU</button>
+        </div>
       </div>
     </section>
 
@@ -85,6 +122,7 @@
           <p>⚡ Use <b>Left/Right Arrows</b> or <b>A/D keys</b> to move your neon platform.</p>
           <p>❌ Avoid falling <b>red glitches</b>.</p>
           <p>❤️ You have 3 lives. Every dodge gives you +10 points!</p>
+          <p>⏸️ If you need, you can stop game with <b>ESC</b> key</p>
         </div>
         <button id="close-modal-btn">CLOSE</button>
       </div>
