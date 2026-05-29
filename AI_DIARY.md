@@ -40,3 +40,11 @@ Because these AI tools have free plan and they are the best AI tools nowadays.
 - **What was wrong:** Score in game over menu was less by 10 point than high score
 - **How I fixed it:** We give maximum value to score 
 - **Time lost:** ~7 minutes
+
+### [28.05.2026] - [Add buttons for mobile phones]
+
+- **What I asked the AI:** Add buttons for mobile phones
+- **What it gave me:** Gave me code which adds buttons 
+- **What was wrong:** Code crashed lives and score counters
+- **How I fixed it:** I manually returned score and lives counters, I deleted score and lives counters in the bottom
+- **Time lost:** ~35 minutes
