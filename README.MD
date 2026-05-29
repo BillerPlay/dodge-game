@@ -78,4 +78,4 @@ A functional approach was chosen because the game is relatively small and simple
 
 ## 🐞 Known Bugs / Future Improvements
 
-No bugs at the moment.
+- There are no sounds unless we click somewhere.
